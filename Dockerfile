@@ -1,4 +1,8 @@
 FROM docker.io/library/maven:3.9.12-eclipse-temurin-17 AS build-hapi
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp/hapi-fhir-jpaserver-starter
 
 ARG OPENTELEMETRY_JAVA_AGENT_VERSION=2.24.0
