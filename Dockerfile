@@ -39,7 +39,19 @@ COPY --from=build-hapi --chown=65532:65532 /tmp/hapi-fhir-jpaserver-starter/targ
 COPY --from=build-hapi --chown=65532:65532 /tmp/hapi-fhir-jpaserver-starter/opentelemetry-javaagent.jar /app
 
 ########### distroless brings focus on security and runs on plain spring boot - this is the default image
-FROM gcr.io/distroless/java21-debian12:nonroot AS default
+FROM eclipse-temurin:17-jre-jammy AS default
+RUN apt-get update && apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -u 65532 appuser
+
+USER appuser
+WORKDIR /app
+
+COPY --from=build-distroless /app /app
+COPY --from=build-hapi /tmp/hapi-fhir-jpaserver-starter/opentelemetry-javaagent.jar /app
+
+ENTRYPOINT ["java","--class-path","/app/main.war","-Dloader.path=main.war!/WEB-INF/classes/,main.war!/WEB-INF/,/app/extra-classes","org.springframework.boot.loader.PropertiesLauncher"]
 # 65532 is the nonroot user's uid
 # used here instead of the name to allow Kubernetes to easily detect that the container
 # is running as a non-root (uid != 0) user.
