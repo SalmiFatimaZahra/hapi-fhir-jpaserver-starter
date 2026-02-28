@@ -59,6 +59,15 @@ jobs:
           file dependency-check.zip
           unzip -q dependency-check.zip
 
+      - name: Verify NVD secret
+        run: |
+          if [ -z "${{ secrets.NVD_API_KEY }}" ]; then
+            echo "❌ SECRET IS EMPTY"
+            exit 1
+          else
+            echo "✅ SECRET EXISTS"
+          fi
+
       - name: Run Dependency Check
         run: |
           ./dependency-check/bin/dependency-check.sh \
