@@ -38,7 +38,7 @@ COPY --chown=65532:65532 server.xml /usr/local/tomcat/conf/server.xml
 COPY --from=build-hapi --chown=65532:65532 /tmp/hapi-fhir-jpaserver-starter/target/ROOT.war /usr/local/tomcat/webapps/ROOT.war
 COPY --from=build-hapi --chown=65532:65532 /tmp/hapi-fhir-jpaserver-starter/opentelemetry-javaagent.jar /app
 
-########### distroless brings focus on security and runs on plain spring boot - this is the default image
+# distroless brings focus on security and runs on plain spring boot - this is the default image
 FROM eclipse-temurin:17-jre-jammy AS default
 RUN apt-get update && apt-get upgrade -y && \
     rm -rf /var/lib/apt/lists/*
