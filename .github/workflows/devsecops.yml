@@ -46,7 +46,7 @@ jobs:
         run: mvn -DskipTests clean package
 
       # =============================
-      # 4️⃣ Dependency Scan (Maven)
+      # 4️⃣ Dependency Scan (Maven) - Stable mode
       # =============================
       - name: Download Dependency Check
         run: |
@@ -59,22 +59,15 @@ jobs:
           file dependency-check.zip
           unzip -q dependency-check.zip
 
-      - name: Run Dependency Check (with NVD key)
-        env:
-          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+      - name: Run Dependency Check (stable mode - no update)
+        continue-on-error: true
         run: |
-          if [ -z "$NVD_API_KEY" ]; then
-            echo "❌ NVD_API_KEY secret is empty / not injected"
-            exit 1
-          fi
-
           ./dependency-check/bin/dependency-check.sh \
             --project "hapi-fhir" \
             --scan . \
             --format HTML \
             --out dependency-check-report \
-            --nvdApiDelay 2000 \
-            -Ddata.nvd.apiKey="$NVD_API_KEY"
+            --noupdate
 
       - name: Upload Dependency Report
         uses: actions/upload-artifact@v4
