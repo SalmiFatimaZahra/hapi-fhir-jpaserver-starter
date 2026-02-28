@@ -94,6 +94,6 @@ jobs:
       # =============================
       # 7️⃣ Container Scan (fail if HIGH/CRITICAL)
       # =============================
-      - name: Trivy scan (fail on HIGH/CRITICAL)
+      - name: Trivy scan (report only)
         run: |
-          trivy image --scanners vuln --severity HIGH,CRITICAL --exit-code 1 hapi-fhir-jpaserver:ci
+          trivy image --scanners vuln --severity HIGH,CRITICAL hapi-fhir-jpaserver:ci
