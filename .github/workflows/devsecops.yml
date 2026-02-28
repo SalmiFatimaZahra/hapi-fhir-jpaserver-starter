@@ -45,11 +45,13 @@ jobs:
       - name: Build (skip tests)
         run: mvn -DskipTests clean package
 
-          # =============================
+      # =============================
       # 4️⃣ Dependency Scan (Maven)
       # =============================
       - name: Download Dependency Check
         run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip wget
           wget -q https://github.com/jeremylong/DependencyCheck/releases/latest/download/dependency-check-8.4.0-release.zip
           unzip -q dependency-check-8.4.0-release.zip
 
