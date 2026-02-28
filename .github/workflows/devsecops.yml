@@ -45,16 +45,21 @@ jobs:
       - name: Build (skip tests)
         run: mvn -DskipTests clean package
 
-      # =============================
+          # =============================
       # 4️⃣ Dependency Scan (Maven)
       # =============================
-      - name: OWASP Dependency Check
-        uses: dependency-check/Dependency-Check_Action@main
-        with:
-          project: "hapi-fhir"
-          path: "."
-          format: "HTML"
-          out: "dependency-check-report"
+      - name: Download Dependency Check
+        run: |
+          wget -q https://github.com/jeremylong/DependencyCheck/releases/latest/download/dependency-check-8.4.0-release.zip
+          unzip -q dependency-check-8.4.0-release.zip
+
+      - name: Run Dependency Check
+        run: |
+          ./dependency-check/bin/dependency-check.sh \
+            --project "hapi-fhir" \
+            --scan . \
+            --format HTML \
+            --out dependency-check-report
 
       - name: Upload Dependency Report
         uses: actions/upload-artifact@v4
