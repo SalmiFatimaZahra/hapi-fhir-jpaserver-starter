@@ -59,23 +59,22 @@ jobs:
           file dependency-check.zip
           unzip -q dependency-check.zip
 
-      - name: Verify NVD secret
+      - name: Run Dependency Check (with NVD key)
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
-          if [ -z "${{ secrets.NVD_API_KEY }}" ]; then
-            echo "❌ SECRET IS EMPTY"
+          if [ -z "$NVD_API_KEY" ]; then
+            echo "❌ NVD_API_KEY secret is empty / not injected"
             exit 1
-          else
-            echo "✅ SECRET EXISTS"
           fi
 
-      - name: Run Dependency Check
-        run: |
           ./dependency-check/bin/dependency-check.sh \
             --project "hapi-fhir" \
             --scan . \
             --format HTML \
-            --out dependency-check-report
-            --nvdApiKey "${{ secrets.NVD_API_KEY }}"
+            --out dependency-check-report \
+            --nvdApiDelay 2000 \
+            -Ddata.nvd.apiKey="$NVD_API_KEY"
 
       - name: Upload Dependency Report
         uses: actions/upload-artifact@v4
