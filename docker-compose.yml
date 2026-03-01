@@ -4,3 +4,4 @@ services:
     container_name: hapi-fhir
     ports:
       - "8082:8080"
+    restart: unless-stopped
