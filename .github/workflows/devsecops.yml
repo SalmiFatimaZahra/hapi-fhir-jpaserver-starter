@@ -114,7 +114,9 @@ jobs:
       - name: OWASP ZAP Scan
         run: |
           mkdir -p zap-report
+          chmod -R 777 zap-report
           docker run --rm \
+            --user root \
             --network="host" \
             -v ${PWD}/zap-report:/zap/wrk \
             ghcr.io/zaproxy/zaproxy:stable \
