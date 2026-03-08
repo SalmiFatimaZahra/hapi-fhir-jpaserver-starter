@@ -112,12 +112,23 @@ jobs:
       # 9️⃣ DAST Scan - OWASP ZAP
       # =============================
       - name: OWASP ZAP Scan
-        uses: zaproxy/action-baseline@v0.7.0
+        run: |
+          mkdir -p zap-report
+          docker run --rm \
+            --network="host" \
+            -v ${PWD}/zap-report:/zap/wrk \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py -t http://127.0.0.1:8082 -r report.html
+
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
         with:
-          target: 'http://localhost:8082'
+          name: zap-report
+          path: zap-report/report.html
 
       # =============================
       # 🔟 Stop container
       # =============================
       - name: Stop container
+        if: always()
         run: docker stop hapi-test
