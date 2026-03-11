@@ -75,6 +75,15 @@ jobs:
           name: dependency-check-report
           path: dependency-check-report
 
+      - name: Run Checkov
+        run: |
+            docker run --rm \
+            -v ${{ github.workspace }}:/tf \
+            bridgecrew/checkov \
+            -d /tf \
+            --framework dockerfile,yaml
+
+
       # =============================
       # 5️⃣ Build Docker Image
       # =============================
